@@ -1,0 +1,12 @@
+#app{
+  width:100px;
+  height:100px;
+  background-image: url('../public/logo.jpg');
+  background-size: contain;
+}
+@import 'hello.css';
+
+#imgBox{
+  height: 400px;
+  width: 400px;
+}

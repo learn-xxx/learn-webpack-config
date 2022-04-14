@@ -1,0 +1,23 @@
+{
+  "id": "3329114",
+  "name": "测试",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "28829241",
+      "name": "沙滩",
+      "font_class": "shatan",
+      "unicode": "e6bf",
+      "unicode_decimal": 59071
+    },
+    {
+      "icon_id": "28829242",
+      "name": "冰淇淋",
+      "font_class": "bingqilin",
+      "unicode": "e6c0",
+      "unicode_decimal": 59072
+    }
+  ]
+}
