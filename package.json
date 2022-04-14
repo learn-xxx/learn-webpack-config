@@ -36,7 +36,8 @@
   "scripts": {
     "dev": "./node_modules/.bin/cross-env NODE_ENV=dev webpack serve --mode development",
     "test": "./node_modules/.bin/cross-env NODE_ENV=test webpack --mode production",
-    "build": "./node_modules/.bin/cross-env NODE_ENV=prod webpack --mode production"
+    "build": "./node_modules/.bin/cross-env NODE_ENV=prod webpack --mode production",
+    "build:map": "./node_modules/.bin/cross-env NODE_ENV=prod webpack --mode production --config ./webpack-map.config.js"
   },
   "repository": {
     "type": "git",
