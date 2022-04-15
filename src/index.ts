@@ -30,6 +30,22 @@ class Father {
 let f = new Father();
 f.say();
 
+
+import $ from 'jquery';
+
+$('#app').text('hello jquery')
+
+import moment from 'moment'
+
+//手动引入所需要的语言包
+import 'moment/locale/zh-cn';
+
+moment.locale('zh-cn');
+
+let r = moment().endOf('day').fromNow();
+console.log(r);
+
+
 const a = 'Hello merlin'
 console.log(a)
 export { a }

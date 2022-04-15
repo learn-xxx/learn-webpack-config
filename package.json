@@ -2,6 +2,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
+    "@types/jquery": "^3.5.14",
     "babel-loader": "^8.2.4",
     "clean-webpack-plugin": "^4.0.0",
     "cross-env": "^7.0.3",
@@ -36,6 +37,7 @@
   "dependencies": {
     "eslint-scope": "^5.1.1",
     "mime-types": "^2.1.35",
+    "moment": "^2.29.2",
     "vue": "^3.2.33"
   },
   "scripts": {

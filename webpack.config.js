@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
+const { IgnorePlugin } = require('webpack')
 
 // 开发配置
 const devConfig = {
@@ -24,8 +25,8 @@ const buildConfig = {
 
 // 公共配置
 const config = {
-  resolve: {
-    extensions: ['.ts','...']      // 解析对文件格式
+  cache: {
+    type: 'filesystem',
   },
   // 入口文件，可以是字符串也可以是数组或者对象
   entry: './src/index.ts',
@@ -35,6 +36,7 @@ const config = {
     filename: '[name].bundle.js',
   },
   module: {
+    noParse: /jquery/,
     rules: [
       // 处理vue文件
       {
@@ -50,6 +52,13 @@ const config = {
       {
         test: /\.js$/i,
         use: [
+          // 开启多线程打包，之后的loader都会在一个单独的worker池中运行。
+          {
+            loader: 'thread-loader', // 开启多进程打包
+            options: {
+              worker: 3,
+            }
+          },
           {
             loader: 'babel-loader',
             options: {
@@ -57,6 +66,7 @@ const config = {
                 // 使用babel预设
                 '@babel/preset-env'
               ],
+              cacheDirectory: true, // 开启缓存
             }
           }
         ]
@@ -177,9 +187,33 @@ const config = {
     new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
-    // vue-loader的配置
-    new VueLoaderPlugin()
-  ]
+    new VueLoaderPlugin(),
+    // 忽略第三方包中的指定目录
+    new IgnorePlugin({
+      // moment中包含./locale的全部路径（内置的语言包）
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
+    }),
+  ],
+  resolve: {
+    // 配置别名
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      'comps': path.resolve(__dirname, 'src/components'),
+    },
+    // 从左到右尝试解析模块，'...'表示默认列表
+    extensions: ['.ts', '...'],
+    // 优先 src 目录下查找需要解析的文件，会大大节省查找时间
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+  },
+  // 优先查找node_module中loader，找不到查找自定义loader
+  resolveLoader: {
+    modules: ['node_modules', path.resolve(__dirname, 'loader')]
+  },
+  // 不打包某些依赖，例如，在html中引入cdn资源而不打包模块
+  externals: {
+    jquery: 'jQuery',
+  },
 }
 
 // 不直接导出配置，可以根据不同的环境，导出不同的配置
