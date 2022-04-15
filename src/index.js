@@ -12,7 +12,10 @@ img.src = logo
 document.getElementById('imgBox').appendChild(img)
 
 
+import indexVue from './index.vue';
+import { createApp } from 'vue';
 
+createApp(indexVue).mount('#vue');
 
 class Father {
   constructor() {

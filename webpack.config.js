@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 // 开发配置
 const devConfig = {
@@ -32,6 +33,11 @@ const config = {
   },
   module: {
     rules: [
+      // 处理vue文件
+      {
+        test: /\.vue$/,
+        use: 'vue-loader'
+      },
       // 处理js兼容
       {
         test: /\.js$/i,
@@ -57,7 +63,9 @@ const config = {
         // 使用style-loader把css-loader处理完的内容通过style标签插入到head标签中
         // 使用postcss-loader对css进行兼容性处理
         // MiniCssExtractPlugin.loader是把css提取到单独的css文件中，然后通过link标签引入文件
+
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
+
       },
       {
         test: /\.less$/i, // 匹配less文件
@@ -160,7 +168,9 @@ const config = {
     // 提取所有的 CSS 到一个文件中，在css的loader处理中也需要配置
     new MiniCssExtractPlugin({
       filename: '[name].css'
-    })
+    }),
+    // vue-loader的配置
+    new VueLoaderPlugin()
   ]
 }
 
