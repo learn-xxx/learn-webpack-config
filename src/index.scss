@@ -10,4 +10,13 @@ body {
     text-align: center;
     line-height: 300px;
   }
+  .used {
+    width: 200px;
+    height: 200px;
+    background: #ccc;
+  }
+  
+  .unused {
+    background: chocolate;
+  }
 }

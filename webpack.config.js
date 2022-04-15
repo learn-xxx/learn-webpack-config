@@ -4,6 +4,11 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 const { IgnorePlugin } = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const PurgecssWebpackPlugin = require('purgecss-webpack-plugin')
+const glob = require('glob'); // 文件匹配模式
 
 // 开发配置
 const devConfig = {
@@ -25,6 +30,7 @@ const buildConfig = {
 
 // 公共配置
 const config = {
+  // cache持久化缓存,改善构建速度
   cache: {
     type: 'filesystem',
   },
@@ -194,6 +200,15 @@ const config = {
       resourceRegExp: /^\.\/locale$/,
       contextRegExp: /moment$/,
     }),
+    // 构建结果分析插件
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled',  // 不启动展示打包报告的http服务器
+      generateStatsFile: true, // 是否生成stats.json文件
+    }),
+    // 清除无用css
+    new PurgecssWebpackPlugin({
+      paths: glob.sync(`${path.resolve(__dirname, 'src')}/**/*`, { nodir: true })
+    }),
   ],
   resolve: {
     // 配置别名
@@ -213,6 +228,65 @@ const config = {
   // 不打包某些依赖，例如，在html中引入cdn资源而不打包模块
   externals: {
     jquery: 'jQuery',
+  },
+  optimization: {
+    minimize: true, // 开启最小化
+    minimizer: [
+      // webpack内置模块，压缩js
+      // new TerserPlugin({}),
+      // 添加 css 压缩配置
+      new OptimizeCssAssetsPlugin({}),
+    ],
+    splitChunks: {
+      chunks: 'async', // 有效值为 `all`，`async` 和 `initial`
+      minSize: 20000, // 生成 chunk 的最小体积（≈ 20kb)
+      minRemainingSize: 0, // 确保拆分后剩余的最小 chunk 体积超过限制来避免大小为零的模块
+      minChunks: 1, // 拆分前必须共享模块的最小 chunks 数。
+      maxAsyncRequests: 30, // 最大的按需(异步)加载次数
+      maxInitialRequests: 30, // 打包后的入口文件加载时，还能同时加载js文件的数量（包括入口文件）
+      enforceSizeThreshold: 50000,
+      // cacheGroups: { // 配置提取模块的方案
+      //   defaultVendors: {
+      //     test: /[\/]node_modules[\/]/,
+      //     priority: -10,
+      //     reuseExistingChunk: true,
+      //   },
+      //   default: {
+      //     minChunks: 2,
+      //     priority: -20,
+      //     reuseExistingChunk: true,
+      //   },
+      // },
+      cacheGroups: { // 配置提取模块的方案
+        default: false,
+        styles: {
+          name: 'styles',
+          test: /\.(s?css|less|sass)$/,
+          chunks: 'all',
+          enforce: true,
+          priority: 10,
+        },
+        common: {
+          name: 'chunk-common',
+          chunks: 'all',
+          minChunks: 2,
+          maxInitialRequests: 5,
+          minSize: 0,
+          priority: 1,
+          enforce: true,
+          reuseExistingChunk: true,
+        },
+        vendors: {
+          name: 'chunk-vendors',
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'all',
+          priority: 2,
+          enforce: true,
+          reuseExistingChunk: true,
+        },
+        // ... 根据不同项目再细化拆分内容
+      },
+    }
   },
 }
 

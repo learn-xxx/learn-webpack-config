@@ -1,5 +1,5 @@
 <template>
-  <div id="vue">
+  <div id="test">
     hello,vue-loader
   </div>
 </template>
@@ -9,7 +9,7 @@
 </script>
 
 <style scoped>
-#vue{
+#test{
   color:red;
 }
 </style>
