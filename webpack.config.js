@@ -24,8 +24,11 @@ const buildConfig = {
 
 // 公共配置
 const config = {
+  resolve: {
+    extensions: ['.ts','...']      // 解析对文件格式
+  },
   // 入口文件，可以是字符串也可以是数组或者对象
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     path: path.join(__dirname, 'dist'),
     // 文件名，当多入口文件时，[name]可以设置的名称命名，默认为main，另外还有[contenthash]等占位符，
@@ -37,6 +40,11 @@ const config = {
       {
         test: /\.vue$/,
         use: 'vue-loader'
+      },
+      // 处理ts文件
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
       },
       // 处理js兼容
       {

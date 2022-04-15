@@ -9,7 +9,7 @@ import logo from '../public/logo.jpg'
 const img = new Image()
 img.src = logo
 
-document.getElementById('imgBox').appendChild(img)
+document.getElementById('imgBox')?.appendChild(img)
 
 
 import indexVue from './index.vue';
@@ -18,6 +18,7 @@ import { createApp } from 'vue';
 createApp(indexVue).mount('#vue');
 
 class Father {
+  private name;
   constructor() {
     this.name = 'merlin'
   }
